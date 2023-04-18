@@ -1,7 +1,6 @@
 package com.example.ocbmantenimientos.service;
 
 import com.example.ocbmantenimientos.model.User;
-import com.example.ocbmantenimientos.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -11,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Key;
@@ -22,13 +22,19 @@ import java.util.function.Function;
 public class JwtService {
     @Value("${app.jwt.access.secret}")
     private String ACCESS_TOKEN_SECRET;
-    private final UserRepository userRepo;
+    private final WebClient.Builder webClientBuilder;
 
     public User getUser(String authorization) throws Exception {
 
         String userEmail = getEmailFromAuth(authorization);
-        if (userEmail == null) throw new Exception("invalid token");
-        return userRepo.findOneByEmail(userEmail).orElseThrow();
+        if (userEmail == null) throw new Exception("Invalid token");
+        return webClientBuilder.build()
+                .get()
+                .uri("http://authorization/auth/user")
+                .header("Authorization", authorization)
+                .retrieve()
+                .bodyToMono(User.class)
+                .block();
     }
 
 
