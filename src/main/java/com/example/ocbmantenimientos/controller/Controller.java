@@ -1,6 +1,7 @@
 package com.example.ocbmantenimientos.controller;
 
 import com.example.ocbmantenimientos.dto.BasicResponse;
+import com.example.ocbmantenimientos.dto.QueryWithParameters;
 import com.example.ocbmantenimientos.model.Query;
 import com.example.ocbmantenimientos.service.AuthorizeService;
 import lombok.RequiredArgsConstructor;
@@ -33,5 +34,9 @@ public class Controller {
                     HttpStatus.BAD_REQUEST
             );
         }
+    }
+    @PostMapping("/execute-query")
+    public ResponseEntity<String> executeQuery(@RequestBody QueryWithParameters queryWithParameters){
+       return ResponseEntity.ok(authorizeService.executeQuery(queryWithParameters));
     }
 }

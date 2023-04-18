@@ -1,5 +1,6 @@
 package com.example.ocbmantenimientos.service;
 
+import com.example.ocbmantenimientos.dto.QueryWithParameters;
 import com.example.ocbmantenimientos.model.Query;
 import com.example.ocbmantenimientos.model.User;
 import com.example.ocbmantenimientos.utils.QueryStatus;
@@ -94,4 +95,8 @@ public class AuthorizeService {
     }
 
 
+    public String executeQuery(QueryWithParameters queryWithParameters) {
+        int affectedRows = jdbcTemplate.update(queryWithParameters.getQuery(), queryWithParameters.getValues());
+        return String.format("affectedRows: %s", affectedRows);
+    }
 }
