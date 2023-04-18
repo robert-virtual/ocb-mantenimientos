@@ -6,10 +6,7 @@ import com.example.ocbmantenimientos.service.AuthorizeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 // business logic:
 // service logic:
 
@@ -19,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class Controller {
     private final AuthorizeService authorizeService;
 
-    @PostMapping("/authorize/{query_id}")
+    @PutMapping("/authorize/{query_id}")
     public ResponseEntity<BasicResponse<Query>> authorize(
             @RequestHeader("Authorization") String authorization,
             @PathVariable long query_id

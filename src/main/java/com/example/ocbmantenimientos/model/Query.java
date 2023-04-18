@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Data
@@ -23,8 +22,8 @@ public class Query {
     private String whereCondition;
     private String response;
     private String status;
-    private User requestedBy;
-    private User authorizedBy;
+    private int requestedBy;
+    private int authorizedBy;
     private LocalDateTime requestedAt;
     private LocalDateTime authorizedAt;
     public static final String STATUS_REQUESTED = "requested";

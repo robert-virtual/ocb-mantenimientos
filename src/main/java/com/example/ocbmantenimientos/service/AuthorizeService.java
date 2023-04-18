@@ -29,7 +29,7 @@ public class AuthorizeService {
 
         Optional<Query> optionalQuery = Optional.ofNullable(webClientBuilder.build()
                 .get()
-                .uri("http://queries/get/{query_id}", query_id)
+                .uri("http://queries/queries/{query_id}", query_id)
                 .header("Authorization", authorization)
                 .retrieve()
                 .bodyToMono(Query.class)
@@ -43,8 +43,8 @@ public class AuthorizeService {
         });
         Map<String, Object> where = objectMapper.readValue(query.getWhereCondition(), new TypeReference<>() {
         });
-        Object whereKey = where.keySet().toArray()[0];
-        Object whereKeyValue = where.get(whereKey);
+        Object whereKey = where != null ? where.keySet().toArray()[0] : null;
+        Object whereKeyValue = where != null ? where.get(whereKey == null ? "id" : whereKey) : null;
         Object id = whereKeyValue == null ? 0 : whereKeyValue;
         String fieldsString = String.join(",", parameters.keySet());//field1,field2
         List<String> fields = parameters.keySet().stream().map(k -> String.format("%s=?", k)).collect(Collectors.toList());//field1=?,field2=?
@@ -58,7 +58,7 @@ public class AuthorizeService {
                                 fieldsString,
                                 valuesPlaceholders
                         ),
-                        parameters.values()
+                        parameters.values().toArray()
                 );
                 break;
             case Query.ACTION_UPDATE:
@@ -88,7 +88,7 @@ public class AuthorizeService {
         query.setStatus(QueryStatus.STATUS_AUTHORIZED.toString());
         query.setAuthorizedAt(LocalDateTime.now());
         query.setResponse(String.format("affected rows: %d", affectedRows));
-        query.setAuthorizedBy(user);
+        query.setAuthorizedBy(user.getId());
 //        return queryRepository.save(query);
         return query;
     }
